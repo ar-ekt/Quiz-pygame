@@ -4,8 +4,7 @@ In the program you should move and select with keyboards and mouse is unusable.
 
 In main menu you should choose one of options(log-in, sign-up or exit).
 
-<p align="center"><img src="https://user-images.githubusercontent.com/57006850/88706129-ad514100-d125-11ea-9d03-af8adde1a200.jpg" /></p>
-##![1](https://user-images.githubusercontent.com/57006850/88706129-ad514100-d125-11ea-9d03-af8adde1a200.jpg)
+<p align="center"><img src="https://user-images.githubusercontent.com/57006850/88706129-ad514100-d125-11ea-9d03-af8adde1a200.jpg" /></img></p>
 
 If you don't have any account or you want a new account you can use "Sign-up" to make a new account. In this part you should enter username, password and your national-code and then click sign-up button and then your account have made.
 
