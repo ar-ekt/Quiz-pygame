@@ -6,7 +6,7 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 from pygame.locals import *
 import time
-    
+
 #---------------------------------------------Colors-------
 black = (0,0,0)
 white = (255,255,255)
@@ -31,117 +31,100 @@ pygame.display.set_caption("Quiz")
 scr()
 
 #---------------------------------------------Login--------
-def loginRects(button_font, c1, c2, c3):
+def loginRects(but_font, c1, c2, c3):
     global screen, black, gray
-    
     pygame.draw.rect(screen, gray, (690,160,610,70))
     for ic in [(690,160,610,5), (690,225,610,5), (690,160,5,70), (1295,160,5,70)]:
         pygame.draw.rect(screen, c1, ic)
-        
     pygame.draw.rect(screen, gray, (690,320,610,70))
     for ic in [(690,320,610,5), (690,385,610,5), (690,320,5,70), (1295,320,5,70)]:
         pygame.draw.rect(screen, c2, ic)
-        
     pygame.draw.rect(screen, c3, (910,430,170,70))
-    button_label = button_font.render("LOGIN", 1, gray)
-    screen.blit(button_label, (930, 447))
+    but_label = but_font.render("LOGIN", 1, gray)
+    screen.blit(but_label, (930, 447))
 
 def login():
     global screen, black, red, white, gray, dark_gray, green
+    u_file = open("./files/users.txt", "r")
+    users = {us[0]: [us[1], us[2]] for us in [u[:-1].split() for u in u_file.readlines()]}
+    u_file.close()
     
-    #---------------------------Users---------------------
-    user_file = open("./files/users.txt", "r")
-    users = {us[0]: [us[1], us[2]] for us in [u[:-1].split() for u in user_file.readlines()]}
-    user_file.close()
-    
-    #---------------------------Fonts---------------------
-    button_font = pygame.font.SysFont("", 60)
-    national_font = pygame.font.SysFont("", 40)
-    warning_font = pygame.font.SysFont("", 30)
-    box_sub_font = pygame.font.SysFont("", 70)
+    pygame.draw.rect(screen, white, (630,40,770,730))
+    li_font = pygame.font.SysFont("", 70)
+    but_font = pygame.font.SysFont("", 60)
     box_font = pygame.font.SysFont("", 50)
+    nati_font = pygame.font.SysFont("", 40)
+    war_font = pygame.font.SysFont("", 30)
     
-    pygame.draw.rect(screen, white, (630,40,770,730)) # Clean right screen
+    li_label = li_font.render("USERNAME", 1, black)
+    screen.blit(li_label, (715, 110))
+    li_label = li_font.render("PASSWORD", 1, black)
+    screen.blit(li_label, (715, 270))
     
-    #---------------------------Show-boxes-&-their-subject---------
-    box_sub_label = box_sub_font.render("USERNAME", 1, black)
-    screen.blit(box_sub_label, (715, 110))
-    box_sub_label = box_sub_font.render("PASSWORD", 1, black)
-    screen.blit(box_sub_label, (715, 270))
-    loginRects(button_font, black, black, black)
+    loginRects(but_font, black, black, black)
     
+    login_exit = True
     login_mode = 0
     cursor = 0
-    login_inputs = ["",""]
+    sts = ["",""]
     box_coor = [(700, 175), (700, 335)]
-    while True:
-        #---------------------------Update-right-screen-----------------
-        if login_mode == 2: # Done button mode
-            loginRects(button_font, black, black, red)
+    while login_exit:
+        if login_mode == 2:
+            loginRects(but_font, black, black, red)
             for imc in range(2):
-                box_label = box_font.render(login_inputs[imc], 1, black)
+                box_label = box_font.render(sts[imc], 1, black)
                 screen.blit(box_label, box_coor[imc])
-        else: # Box mode (login_mode == 1 or 0)
+        else:
             if login_mode == 0:
-                loginRects(button_font, red, black, black)
+                loginRects(but_font, red, black, black)
             elif login_mode == 1:
-                loginRects(button_font, black, red, black)
-            
-            if 0 <= cursor % 100 <= 49: # Show selected box with cursor
-                box_label = box_font.render(login_inputs[login_mode]+"|", 1, black)
-            elif 50 <= cursor % 100 <= 99: # Show selected box without cursor
-                box_label = box_font.render(login_inputs[login_mode], 1, black)
+                loginRects(but_font, black, red, black)
+            if 0 <= cursor % 100 <= 49:
+                box_label = box_font.render(sts[login_mode]+"|", 1, black)
+            elif 50 <= cursor % 100 <= 99:
+                box_label = box_font.render(sts[login_mode], 1, black)
             screen.blit(box_label, box_coor[login_mode])
-            
-            # Show other box
-            box_label = box_font.render(login_inputs[1-login_mode], 1, black)
+            box_label = box_font.render(sts[1-login_mode], 1, black)
             screen.blit(box_label, box_coor[1-login_mode])
-        
         pygame.display.flip()
-        
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 exit0(0)
                 return 0
-            
             elif evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_ESCAPE:
                     return 0
-                    
                 elif (evento.key == pygame.K_KP_ENTER or evento.key == pygame.K_RETURN) and login_mode == 2:
-                    pygame.draw.rect(screen, white, (685,510,450,80)) # Clean 
-                    
-                    #---------------------------Check-inputs-----------------
-                    warnings = []
-                    wrong_pass = 0
-                    if "" in login_inputs:
-                        if login_inputs[0] == "":
-                            warnings.append("*Username is empty")
-                        if login_inputs[1] == "":
-                            warnings.append("*Password is empty")
-                    elif not login_inputs[0] in users:
-                        warnings.append("*Username is wrong")
-                    elif login_inputs[1] != users[login_inputs[0]][0]:
-                        warnings.append("*Password is wrong")
-                        warnings.append("*Did you forget your password?")
-                        wrong_pass = 1
-                    #---------------------------Show-warnings-----------------    
-                    for warning_index in range(len(warnings)):
-                        warning_label = warning_font.render(warnings[warning_index], 1, red)
-                        screen.blit(warning_label, (690, 515+warning_index*25))
-                    
-                    if wrong_pass == 0:
+                    pygame.draw.rect(screen, white, (685,510,450,80))
+                    if "" in sts:
+                        if sts[0] == "":
+                            war_label = war_font.render("*Username is empty", 1, red)
+                            screen.blit(war_label, (690, 515))
+                            if sts[1] == "":
+                                war_label = war_font.render("*Password is empty", 1, red)
+                                screen.blit(war_label, (690, 540))
+                        elif sts[1] == "":
+                            war_label = war_font.render("*Password is empty", 1, red)
+                            screen.blit(war_label, (690, 515))
                         break
-                    else:
+                    if sts[0] not in users:
+                        war_label = war_font.render("*Username is wrong", 1, red)
+                        screen.blit(war_label, (690, 515))
+                        break
+                    if sts[1] != users[sts[0]][0]:
+                        war_label = war_font.render("*Password is wrong", 1, red)
+                        screen.blit(war_label, (690, 515))
+                        war_label = war_font.render("*Did you forget your password?", 1, red)
+                        screen.blit(war_label, (690, 540))
                         forget = 1
                         yn = [["NO", (1062,535,50,28), (1073, 540)], ["YES", (1005,535,50,28), (1010, 540)]]
                         forget_exit = True
                         while forget_exit:
                             pygame.draw.rect(screen, red, yn[forget][1])
-                            war_label = warning_font.render(yn[forget][0], 1, white)
+                            war_label = war_font.render(yn[forget][0], 1, white)
                             screen.blit(war_label, yn[forget][2])
                             pygame.draw.rect(screen, black, yn[1-forget][1])
-                            war_label = warning_font.render(yn[1-forget][0], 1, white)
+                            war_label = war_font.render(yn[1-forget][0], 1, white)
                             screen.blit(war_label, yn[1-forget][2])
                             pygame.display.flip()
                             for eventi in pygame.event.get():
@@ -161,21 +144,21 @@ def login():
                                             login_mode = 1
                                             break
                                         if forget == 1:
-                                            box_sub_label = box_sub_font.render("NATIONAL-CODE", 1, black)
-                                            screen.blit(box_sub_label, (715, 590))
+                                            li_label = li_font.render("NATIONAL-CODE", 1, black)
+                                            screen.blit(li_label, (715, 590))
                                             cursor = 0
                                             nati = ""
                                             pygame.display.flip()
-                                            national_exit = True
-                                            while national_exit:
+                                            nati_exit = True
+                                            while nati_exit:
                                                 pygame.draw.rect(screen, gray, (690,640,610,70))
                                                 for ic in [(690,640,610,5), (690,705,610,5), (690,640,5,70), (1295,640,5,70)]:
                                                     pygame.draw.rect(screen, red, ic)
                                                 if 0 <= cursor % 200 <= 99:
-                                                    national_label = box_font.render(nati+"|", 1, black)
+                                                    nati_label = box_font.render(nati+"|", 1, black)
                                                 elif 100 <= cursor % 200 <= 199:
-                                                    national_label = box_font.render(nati, 1, black)
-                                                screen.blit(national_label, (700,655))
+                                                    nati_label = box_font.render(nati, 1, black)
+                                                screen.blit(nati_label, (700,655))
                                                 pygame.display.flip()
                                                 for evente in pygame.event.get():
                                                     if evente.type == pygame.QUIT:
@@ -184,7 +167,7 @@ def login():
                                                     elif evente.type == pygame.KEYDOWN:
                                                         if evente.key == pygame.K_ESCAPE or evente.key == pygame.K_UP:
                                                             forget = 0
-                                                            national_exit = False
+                                                            nati_exit = False
                                                             pygame.draw.rect(screen, white, (689,589,627,170))
                                                             pygame.display.flip()
                                                         elif evente.key == pygame.K_BACKSPACE:
@@ -193,44 +176,39 @@ def login():
                                                             pygame.draw.rect(screen, white, (699,717,600,30))
                                                             c_gr = red
                                                             if nati == "":
-                                                                national_war = "National-code is empty"
+                                                                nati_war = "National-code is empty"
                                                             elif not nati.isdigit():
-                                                                national_war = "National-code must be numerical"
-                                                            elif nati != users[login_inputs[0]][1]:
-                                                                national_war = "National-code is wrong"
+                                                                nati_war = "National-code must be numerical"
+                                                            elif nati != users[sts[0]][1]:
+                                                                nati_war = "National-code is wrong"
                                                             else:
-                                                                national_war = "Your password is " + users[login_inputs[0]][0]
+                                                                nati_war = "Your password is "+users[sts[0]][0]
                                                                 c_gr = green
                                                                 forget_exit = False
-                                                                national_exit = False
+                                                                nati_exit = False
                                                                 login_mode = 1
                                                                 for ic in [(690,640,610,5), (690,705,610,5), (690,640,5,70), (1295,640,5,70)]:
                                                                     pygame.draw.rect(screen, black, ic)
-                                                            national_label = national_font.render(national_war, 1, c_gr)
-                                                            screen.blit(national_label, (700,718))
+                                                            nati_label = nati_font.render(nati_war, 1, c_gr)
+                                                            screen.blit(nati_label, (700,718))
                                                             pygame.display.flip()
                                                         elif len(nati) <= 9:
                                                             nati += evente.unicode
                                                 cursor += 1
                         break
-                    return [login_inputs[0]] + users[login_inputs[0]]
-                
+                    return [sts[0]] + users[sts[0]]
                 elif evento.key == pygame.K_UP or (evento.key == pygame.K_TAB and pygame.key.get_mods() & pygame.KMOD_SHIFT):
                     login_mode = {0:0, 1:0, 2:1}[login_mode]
-                    
                 elif evento.key == pygame.K_DOWN or evento.key == pygame.K_TAB or evento.key == pygame.K_KP_ENTER or evento.key == pygame.K_RETURN:
                     login_mode = {0:1, 1:2, 2:2}[login_mode]
-                    
                 elif evento.key == pygame.K_BACKSPACE:
-                    login_inputs[login_mode] = login_inputs[login_mode][:-1]
-                    
-                elif login_mode != 2 and len(login_inputs[login_mode]) <= 15:
-                    login_inputs[login_mode] += evento.unicode
-                    
+                    sts[login_mode] = sts[login_mode][:-1]
+                elif login_mode != 2 and len(sts[login_mode]) <= 15:
+                    sts[login_mode] += evento.unicode
         cursor += 1
         pygame.display.flip()
 #---------------------------------------------Signup--------
-def signupRects(button_font, c1, c2, c3, c4):
+def signupRects(but_font, c1, c2, c3, c4):
     global screen, black, gray
     pygame.draw.rect(screen, gray, (690,160,610,70))
     for ic in [(690,160,610,5), (690,225,610,5), (690,160,5,70), (1295,160,5,70)]:
@@ -242,56 +220,56 @@ def signupRects(button_font, c1, c2, c3, c4):
     for ic in [(690,480,610,5), (690,545,610,5), (690,480,5,70), (1295,480,5,70)]:
         pygame.draw.rect(screen, c3, ic)
     pygame.draw.rect(screen, c4, (900,590,190,70))
-    button_label = button_font.render("SIGN UP", 1, gray)
-    screen.blit(button_label, (910, 607))
+    but_label = but_font.render("SIGN UP", 1, gray)
+    screen.blit(but_label, (910, 607))
 
 def signup():
     global screen, black, red, white, green
-    user_file = open("./files/users.txt", "r")
-    users = {us[0]: [us[1], us[2]] for us in [u[:-1].split() for u in user_file.readlines()]}
-    user_file.close()
+    u_file = open("./files/users.txt", "r")
+    users = {us[0]: [us[1], us[2]] for us in [u[:-1].split() for u in u_file.readlines()]}
+    u_file.close()
     
     pygame.draw.rect(screen, white, (630,40,770,730))
-    box_sub_font = pygame.font.SysFont("", 70)
-    button_font = pygame.font.SysFont("", 60)
+    li_font = pygame.font.SysFont("", 70)
+    but_font = pygame.font.SysFont("", 60)
     box_font = pygame.font.SysFont("", 50)
-    warning_font = pygame.font.SysFont("", 30)
+    war_font = pygame.font.SysFont("", 30)
     
-    box_sub_label = box_sub_font.render("USERNAME", 1, black)
-    screen.blit(box_sub_label, (715, 110))
-    box_sub_label = box_sub_font.render("PASSWORD", 1, black)
-    screen.blit(box_sub_label, (715, 270))
-    box_sub_label = box_sub_font.render("NATIONAL-CODE", 1, black)
-    screen.blit(box_sub_label, (715, 430))
+    li_label = li_font.render("USERNAME", 1, black)
+    screen.blit(li_label, (715, 110))
+    li_label = li_font.render("PASSWORD", 1, black)
+    screen.blit(li_label, (715, 270))
+    li_label = li_font.render("NATIONAL-CODE", 1, black)
+    screen.blit(li_label, (715, 430))
     
-    signupRects(button_font, black, black, black, black)
+    signupRects(but_font, black, black, black, black)
     signup_exit = True
     signup_mode = 0
     cursor = 0
-    login_inputs = ["","",""]
+    sts = ["","",""]
     box_coor = [(700, 175), (700, 335), (700, 495)]
     conv_mode = [[1,2], [0,2], [0,1]]
     while signup_exit:
         if signup_mode == 3:
-            signupRects(button_font, black, black, black, red)
+            signupRects(but_font, black, black, black, red)
             for imc in range(3):
-                box_label = box_font.render(login_inputs[imc], 1, black)
+                box_label = box_font.render(sts[imc], 1, black)
                 screen.blit(box_label, box_coor[imc])
         else:
             if signup_mode == 0:
-                signupRects(button_font, red, black, black, black)
+                signupRects(but_font, red, black, black, black)
             elif signup_mode == 1:
-                signupRects(button_font, black, red, black, black)
+                signupRects(but_font, black, red, black, black)
             elif signup_mode == 2:
-                signupRects(button_font, black, black, red, black)
+                signupRects(but_font, black, black, red, black)
             if 0 <= cursor % 100 <= 49:
-                box_label = box_font.render(login_inputs[signup_mode]+"|", 1, black)
+                box_label = box_font.render(sts[signup_mode]+"|", 1, black)
             elif 50 <= cursor % 100 <= 99:
-                box_label = box_font.render(login_inputs[signup_mode], 1, black)
+                box_label = box_font.render(sts[signup_mode], 1, black)
             screen.blit(box_label, box_coor[signup_mode])
-            box_label = box_font.render(login_inputs[conv_mode[signup_mode][0]], 1, black)
+            box_label = box_font.render(sts[conv_mode[signup_mode][0]], 1, black)
             screen.blit(box_label, box_coor[conv_mode[signup_mode][0]])
-            box_label = box_font.render(login_inputs[conv_mode[signup_mode][1]], 1, black)
+            box_label = box_font.render(sts[conv_mode[signup_mode][1]], 1, black)
             screen.blit(box_label, box_coor[conv_mode[signup_mode][1]])
         pygame.display.flip()
         for evento in pygame.event.get():
@@ -304,31 +282,31 @@ def signup():
                 elif (evento.key == pygame.K_KP_ENTER or evento.key == pygame.K_RETURN) and signup_mode == 3:
                     pygame.draw.rect(screen, white, (689,589,627,170))
                     txts = []
-                    if "" in login_inputs:
-                        if login_inputs[0] == "":
+                    if "" in sts:
+                        if sts[0] == "":
                             txts.append("Username is empty")
-                        if login_inputs[1] == "":
+                        if sts[1] == "":
                             txts.append("Password is empty")
-                        if login_inputs[2] == "":
+                        if sts[2] == "":
                             txts.append("National-code is empty")
-                    elif not login_inputs[2].isdigit():
+                    elif not sts[2].isdigit():
                         txts.append("National-code must be numerical")
-                    elif len(login_inputs[2]) != 10:
+                    elif len(sts[2]) != 10:
                         txts.append("National-code must be 10 digits")
-                    elif login_inputs[0] in users:
+                    elif sts[0] in users:
                         txts.append("Username is already taken")
                     if txts == []:
-                        warning_label = warning_font.render("*Signed-up succesfully", 1, green)
-                        screen.blit(warning_label, (690, 670))
+                        war_label = war_font.render("*Signed-up succesfully", 1, green)
+                        screen.blit(war_label, (690, 670))
                         pygame.display.flip()
-                        user_file = open("./files/users.txt", "a")
-                        user_file.write(" ".join(login_inputs) + "\n")
-                        user_file.close()
+                        u_file = open("./files/users.txt", "a")
+                        u_file.write(" ".join(sts) + "\n")
+                        u_file.close()
                         time.sleep(1.5)
                         return 0
                     for iwr in range(len(txts)):
-                        warning_label = warning_font.render("*"+txts[iwr], 1, red)
-                        screen.blit(warning_label, (690, 670+iwr*27))
+                        war_label = war_font.render("*"+txts[iwr], 1, red)
+                        screen.blit(war_label, (690, 670+iwr*27))
                     pygame.display.flip()
                     
                 elif evento.key == pygame.K_UP or (evento.key == pygame.K_TAB and pygame.key.get_mods() & pygame.KMOD_SHIFT):
@@ -336,9 +314,9 @@ def signup():
                 elif evento.key == pygame.K_DOWN or evento.key == pygame.K_TAB or evento.key == pygame.K_KP_ENTER or evento.key == pygame.K_RETURN:
                     signup_mode = {0:1, 1:2, 2:3, 3:3}[signup_mode]
                 elif evento.key == pygame.K_BACKSPACE:
-                    login_inputs[signup_mode] = login_inputs[signup_mode][:-1]
-                elif (signup_mode in [0,1] and len(login_inputs[signup_mode]) <= 15) or (signup_mode == 2 and len(login_inputs[signup_mode]) <= 9):
-                    login_inputs[signup_mode] += evento.unicode
+                    sts[signup_mode] = sts[signup_mode][:-1]
+                elif (signup_mode in [0,1] and len(sts[signup_mode]) <= 15) or (signup_mode == 2 and len(sts[signup_mode]) <= 9):
+                    sts[signup_mode] += evento.unicode
         cursor += 1
         pygame.display.flip()
 #---------------------------------------------Account-------
