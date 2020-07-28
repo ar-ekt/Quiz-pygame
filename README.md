@@ -3,7 +3,8 @@ Quiz program written by pygame
 In the program you should move and select with keyboards and mouse is unusable.
 
 In main menu you should choose one of options(log-in, sign-up or exit).
-![1](https://user-images.githubusercontent.com/57006850/88703191-a45e7080-d121-11ea-9278-f229ec4d1284.jpg)
+
+![1](https://user-images.githubusercontent.com/57006850/88703191-a45e7080-d121-11ea-9278-f229ec4d1284.jpg | width = 432)
 
 If you don't have any account or you want a new account you can use "Sign-up" to make a new account. In this part you should enter username, password and your national-code and then click sign-up button and then your account have made.
 If you have account and you want login to your account you can use "Log-in". In this part you should enter your username and password and if you have forgetten your password you can input your national-code then your password will be shown.
