@@ -12,7 +12,7 @@ If you don't have any account or you want a new account you can use "Sign-up" to
 
 If you have account and you want login to your account you can use "Log-in". In this part you should enter your username and password and if you have forgetten your password you can input your national-code then your password will be shown.
 
-<p align="center"><img src="![3](https://user-images.githubusercontent.com/57006850/88706122-ac201400-d125-11ea-9352-ef31ea599e32.jpg)" /></img></p>
+<p align="center"><img src="https://user-images.githubusercontent.com/57006850/88706122-ac201400-d125-11ea-9352-ef31ea599e32.jpg" /></img></p>
 
 And if you want to exit the program you can choose "Exit" or click on close-button in top of the page.
 
@@ -20,7 +20,7 @@ After you login to your account you can choose you want to logout of the account
 
 In the selected quiz you have 3 minutes to answer the questions. You can move on questions or quit the quiz or select done and finish the quiz.
 
-<p align="center"><img src="![4](https://user-images.githubusercontent.com/57006850/88706125-acb8aa80-d125-11ea-9a22-ec3e6d2f63d5.jpg)" /></img></p>
+<p align="center"><img src="https://user-images.githubusercontent.com/57006850/88706125-acb8aa80-d125-11ea-9a22-ec3e6d2f63d5.jpg" /></img></p>
 
 After completing the quiz or running of time, your score will be shown and you can see details of the test.
 Then you will be back to the account page and you can take another test or quit your account.
