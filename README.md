@@ -29,8 +29,11 @@ After completing the quiz or running of time, your score will be shown and you c
 Then you will be back to the account page and you can take another test or quit your account.
 
 Requirement modules
----------------
+---------------------
 os
+
 sys
+
 time
+
 pygame
