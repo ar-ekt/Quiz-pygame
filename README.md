@@ -27,3 +27,10 @@ After completing the quiz or running of time, your score will be shown and you c
 <p align="center"><img src="https://user-images.githubusercontent.com/57006850/88709334-39fdfe00-d12a-11ea-9f6d-248baf4f253c.jpg" width="70%" /></img></p>
 
 Then you will be back to the account page and you can take another test or quit your account.
+
+Requirement modules
+---------------
+os
+sys
+time
+pygame
